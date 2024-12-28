@@ -14,7 +14,6 @@ public class JwtUtil {
     // Tạo JWT
     public String generateToken(String username) {
         return Jwts.builder()
-
                 .setSubject(username)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10)) // Hết hạn sau 10 giờ
@@ -27,9 +26,17 @@ public class JwtUtil {
         final String extractedUsername = extractUsername(token);
         return (extractedUsername.equals(username) && !isTokenExpired(token));
     }
+    public boolean validateToken(String token) {
+        try {
+            Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
 
     // Lấy tên người dùng từ token
-    private String extractUsername(String token) {
+    public String extractUsername(String token) {
         return extractAllClaims(token).getSubject();
     }
 

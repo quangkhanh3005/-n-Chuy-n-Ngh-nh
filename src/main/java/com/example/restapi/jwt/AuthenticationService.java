@@ -12,7 +12,6 @@ public class AuthenticationService {
 
     @Autowired
     private AuthenticationManager authenticationManager;
-
     @Autowired
     private JwtUtil jwtUtil;
 
@@ -26,7 +25,9 @@ public class AuthenticationService {
 
             // Xác thực người dùng
             Authentication authentication = authenticationManager.authenticate(authenticationToken);
-
+            if (authentication == null) {
+                throw new AuthenticationException("Authentication failed: Invalid username or password") {};
+            }
             // Tạo token JWT
             String jwtToken = jwtUtil.generateToken(authentication.getName());
             return jwtToken; // Trả về token cho client

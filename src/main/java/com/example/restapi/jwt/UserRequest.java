@@ -16,6 +16,7 @@ public class UserRequest {
     private String password;
     private String email;
     private Date birthday;
+    private String sdt;
     private String address;
     private int role;
 }

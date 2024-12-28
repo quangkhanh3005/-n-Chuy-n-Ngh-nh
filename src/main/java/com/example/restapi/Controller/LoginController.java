@@ -4,6 +4,8 @@ import com.example.restapi.jwt.LoginRequest;
 import com.example.restapi.jwt.LoginResponse;
 import com.example.restapi.jwt.AuthenticationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -13,16 +15,20 @@ public class LoginController {
     private AuthenticationService authenticationService;
 
     @PostMapping("/login")
-    public LoginResponse login(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest loginRequest) {
         System.out.println("Tên người dùng: " + loginRequest.getUserName());
         System.out.println("Mật khẩu: " + loginRequest.getPass());
         String token = authenticationService.login(loginRequest.getUserName(), loginRequest.getPass());
         System.out.println(token);
+
         if (token.startsWith("Authentication failed")) {
-            return new LoginResponse("null", "Authentication failed");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(new LoginResponse("null", "Authentication failed"));
         }
-        return new LoginResponse(token, "Login successful");
+
+        return ResponseEntity.ok(new LoginResponse(token, "Login successful"));
     }
+
 
 
 }
